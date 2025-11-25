@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,9 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // This line tells Laravel to run your TaskSeeder
         $this->call([
-            TaskSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }
