@@ -1,0 +1,168 @@
+/* General Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+.app-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 40px;
+}
+
+/* --- Task Form Styling --- */
+.task-form-container {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.task-form input[type="text"], 
+.task-form textarea,
+.task-form input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 6px;
+  box-sizing: border-box; 
+}
+
+.task-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #34495e;
+}
+
+/* --- Buttons --- */
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-left: 8px; /* Separator for actions */
+}
+
+.btn-primary {
+  background-color: #2ecc71; /* Green for Add */
+  color: white;
+}
+.btn-primary:hover {
+    background-color: #27ae60;
+}
+
+
+/* --- Task List Styling --- */
+.task-list-container h2 {
+    border-bottom: 2px solid #bdc3c7;
+    padding-bottom: 10px;
+    color: #34495e;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid;
+}
+
+.task-info {
+  flex-grow: 1;
+}
+
+.task-title {
+    display: block;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.task-description {
+    color: #7f8c8d;
+    margin: 0 0 5px 0;
+}
+
+.task-meta {
+    font-size: 0.85em;
+    color: #95a5a6;
+}
+
+/* Status Specific Styles */
+.status-pending {
+  border-left-color: #e74c3c; /* Red */
+  background-color: #fcebeb;
+}
+
+.status-in-progress {
+  border-left-color: #f39c12; /* Orange */
+  background-color: #fff8e1;
+}
+
+.status-completed {
+  border-left-color: #27ae60; /* Green */
+  background-color: #e8f8f5;
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+/* Action Buttons */
+.btn-status {
+    width: 120px;
+}
+
+.status-toggle-mark {
+  background-color: #3498db; /* Blue */
+  color: white;
+}
+.status-toggle-mark:hover {
+    background-color: #2980b9;
+}
+
+.status-toggle-unmark {
+  background-color: #95a5a6; /* Gray */
+  color: white;
+}
+.status-toggle-unmark:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-edit {
+    background-color: #f1c40f; /* Yellow */
+    color: #333;
+}
+.btn-edit:hover {
+    background-color: #f39c12;
+    color: white;
+}
+
+.btn-delete {
+  background-color: #c0392b; /* Dark Red */
+  color: white;
+}
+.btn-delete:hover {
+    background-color: #e74c3c;
+}
