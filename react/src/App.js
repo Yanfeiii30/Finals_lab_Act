@@ -28,8 +28,6 @@ export default function App() {
       model.add(tf.layers.dense({ units: 1, activation: "sigmoid" }));
       model.compile({ optimizer: "adam", loss: "binaryCrossentropy", metrics: ["accuracy"] });
 
-      // Training Logic: [Stock, Sales, LeadTime] -> 1 (Reorder) | 0 (Safe)
-      // TEACHING THE AI: Low stock + High Sales = BAD (Reorder)
       const trainingData = tf.tensor2d([
         [0, 50, 5],   [5, 20, 3],   [100, 10, 2], 
         [50, 50, 2],  [2, 40, 4],   [80, 5, 5]    
@@ -86,18 +84,7 @@ export default function App() {
     analyzeStock();
   }, [model, products]);
 
-  // FEATURE: Manual Stock Adjustment (+/-)
-  const handleStockChange = (id, amount) => {
-    const updatedProducts = products.map(p => {
-      if (p.id === id) {
-        return { ...p, current_inventory: Math.max(0, p.current_inventory + amount) };
-      }
-      return p;
-    });
-    setProducts(updatedProducts);
-  };
-
-  // FEATURE: Sorting
+  // Sorting Logic
   const requestSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -106,7 +93,7 @@ export default function App() {
     setSortConfig({ key, direction });
   };
 
-  // FEATURE: Export CSV
+  // Export Logic
   const handleExport = () => {
     const headers = ["Product,Stock,Sales/Wk,Lead Time,Status\n"];
     const rows = products.map(p => 
@@ -119,7 +106,7 @@ export default function App() {
     link.click();
   };
 
-  // Filtering
+  // Filter & Search Logic
   const processedProducts = useMemo(() => {
     let data = products.filter(p => {
       const matchesFilter = filter === "all" || predictions[p.id] === filter;
@@ -137,18 +124,15 @@ export default function App() {
     return data;
   }, [products, predictions, filter, searchTerm, sortConfig]);
 
-  // Pagination
+  // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = processedProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(processedProducts.length / itemsPerPage);
 
   const topSales = [...products].sort((a,b) => b.avg_sales - a.avg_sales).slice(0, 5);
-
-  // Pie Chart Calculation
   const reorderPercent = stats.total > 0 ? (stats.reorder / stats.total) * 100 : 0;
   
-  // Logic Explanation Helper
   const getExplanation = (p) => {
     if (predictions[p.id] === "Reorder") {
       if (p.current_inventory === 0) return "Stock is empty (0). Immediate restock required.";
@@ -162,8 +146,7 @@ export default function App() {
     <div className={`app-container ${darkMode ? 'dark-mode' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-header">
-          <div className="logo-icon">📊</div>
-          <div className="logo-text">IMS Pro</div>
+          <div className="logo-text">IMS Enterprise</div>
         </div>
         <nav className="nav-menu">
           <button className="nav-link active">Overview</button>
@@ -175,8 +158,7 @@ export default function App() {
       <main className="content-area">
         {stats.reorder > 0 && (
           <div className="alert-banner">
-            <span className="alert-icon">⚠️</span>
-            <span><strong>Attention Needed:</strong> {stats.reorder} products require replenishment.</span>
+            <span className="alert-text"><strong>Attention:</strong> {stats.reorder} products require replenishment.</span>
             <button className="btn-link" onClick={() => setFilter("Reorder")}>Filter List</button>
           </div>
         )}
@@ -188,9 +170,9 @@ export default function App() {
           </div>
           <div className="header-actions">
             <button className="btn-secondary" onClick={() => setDarkMode(!darkMode)}>
-              {darkMode ? "☀️ Light" : "🌙 Dark"}
+              {darkMode ? "Light Mode" : "Dark Mode"}
             </button>
-            <button className="btn-primary" onClick={handleExport}>📥 Export Report</button>
+            <button className="btn-primary" onClick={handleExport}>Export Report</button>
           </div>
         </header>
 
@@ -231,7 +213,6 @@ export default function App() {
             <div className="panel centered-panel">
                <div className="panel-header"><h3>Replenishment Distribution</h3></div>
                <div className="panel-body centered">
-                  {/* CSS Pie Chart */}
                   <div className="pie-chart" style={{
                     background: `conic-gradient(var(--danger) 0% ${reorderPercent}%, var(--success) ${reorderPercent}% 100%)`
                   }}>
@@ -254,7 +235,7 @@ export default function App() {
             <h3>Inventory List</h3>
             <div className="controls">
               <input 
-                type="text" placeholder="🔍 Search..." className="search-input"
+                type="text" placeholder="Search..." className="search-input"
                 value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
               />
               <select className="filter-select" onChange={(e) => setFilter(e.target.value)} value={filter}>
@@ -283,20 +264,16 @@ export default function App() {
                   <tr key={p.id} className="fade-in">
                     <td className="fw-bold">{p.name}</td>
                     <td>
-                       <div className="stock-control">
-                         <button className="btn-icon" onClick={() => handleStockChange(p.id, -1)}>−</button>
-                         <span className="stock-display">{p.current_inventory}</span>
-                         <button className="btn-icon" onClick={() => handleStockChange(p.id, 1)}>+</button>
-                       </div>
+                       <span className="stock-display">{p.current_inventory}</span>
                     </td>
                     <td>{p.avg_sales}</td>
                     <td>
                       <span className={`status-pill ${predictions[p.id] === "Reorder" ? "pill-danger" : "pill-success"}`}>
-                        {predictions[p.id] === "Reorder" ? "⚠️ Restock" : "✅ Optimal"}
+                        {predictions[p.id] === "Reorder" ? "Restock Needed" : "Optimal"}
                       </span>
                     </td>
                     <td>
-                      <button className="btn-sm" onClick={() => setSelectedProduct(p)}>Analysis</button>
+                      <button className="btn-sm" onClick={() => setSelectedProduct(p)}>Analysis Report</button>
                     </td>
                   </tr>
                 ))
@@ -312,12 +289,11 @@ export default function App() {
         </div>
       </main>
 
-      {/* Logic Explainer Modal */}
       {selectedProduct && (
         <div className="modal-backdrop" onClick={() => setSelectedProduct(null)}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Analysis Report: {selectedProduct.name}</h2>
+              <h2>Report: {selectedProduct.name}</h2>
               <button className="close-btn" onClick={() => setSelectedProduct(null)}>×</button>
             </div>
             <div className="modal-body">
@@ -337,7 +313,7 @@ export default function App() {
               </div>
 
               <div className={`recommendation-box ${predictions[selectedProduct.id] === "Reorder" ? "rec-danger" : "rec-success"}`}>
-                <h4>💡 Logic Explanation</h4>
+                <h4>Logic Explanation</h4>
                 <p>{getExplanation(selectedProduct)}</p>
                 <div className="status-large">
                    Decision: 
@@ -346,7 +322,7 @@ export default function App() {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => setSelectedProduct(null)}>Close Report</button>
+              <button className="btn-secondary" onClick={() => setSelectedProduct(null)}>Close</button>
             </div>
           </div>
         </div>
